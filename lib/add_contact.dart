@@ -62,7 +62,10 @@ class AddContactState extends State<AddContact> {
       },
     );
   }
-
+  void sortContacts() {
+    // Sort contacts by fullName
+    contacts.sort((a, b) => a.fullName.compareTo(b.fullName));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,7 +125,7 @@ class AddContactState extends State<AddContact> {
                   );
 
                   contacts.add(newContact);
-
+                  sortContacts();
                   showSuccessDialog(context);
 
                 } else if (phoneNumberController.text.length != 11) {
