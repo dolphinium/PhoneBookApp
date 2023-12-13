@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -17,6 +18,50 @@ class AddContactState extends State<AddContact> {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController photoURLController = TextEditingController();
+
+  void showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        if (Theme.of(context).platform == TargetPlatform.iOS) {
+          return CupertinoTheme(
+            data: const CupertinoThemeData(
+              brightness: Brightness.light,
+              primaryColor: Colors.blue, // Set your primary color
+              scaffoldBackgroundColor: Colors.white, // Set your background color
+            ),
+            child: CupertinoAlertDialog(
+              title: const Text('Contact Added'),
+              content: const Text('The contact has been added successfully!'),
+              actions: [
+                CupertinoDialogAction(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                    GoRouter.of(context).go('/contact_list');
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
+        } else {
+          return AlertDialog(
+            title: const Text('Contact Added'),
+            content: const Text('The contact has been added successfully!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // Close the dialog
+                  GoRouter.of(context).go('/contact_list');
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        }
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +95,7 @@ class AddContactState extends State<AddContact> {
               keyboardType: TextInputType.phone,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(11)
+                LengthLimitingTextInputFormatter(11),
               ],
             ),
             TextField(
@@ -78,7 +123,8 @@ class AddContactState extends State<AddContact> {
 
                   contacts.add(newContact);
 
-                  GoRouter.of(context).go('/contact_list');
+                  showSuccessDialog(context);
+
                 } else if (phoneNumberController.text.length != 11) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
