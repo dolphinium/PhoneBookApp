@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:go_router/go_router.dart';
@@ -48,38 +49,37 @@ class PhoneBook extends StatelessWidget {
     );
   }
 
-  Widget buildContactListTileWithCards(BuildContext context, Contact contact) =>
-      Card(
-        child: ListTile(
-          leading: contact.photoURL != null
-              ? ClipOval(
-                  child: Image.network(
-                    contact.photoURL!,
-                    fit: BoxFit.cover,
-                    height: 50,
-                    width: 50,
-                  ),
-                )
-              : const CircleAvatar(
-                  backgroundColor: Colors.grey,
-                  child: Icon(Icons.person),
-                ),
-          title: Text(contact.fullName),
-          subtitle: Text(contact.phoneNumber),
-          onTap: () {
-            GoRouter.of(context).go('/contact_details/${contact.phoneNumber}');
-          },
+  Widget buildContactListTileWithCards(BuildContext context, Contact contact) => Card(
+    child: ListTile(
+      leading: contact.photoURL != null
+          ? ClipOval(
+        child: Image.network(
+          contact.photoURL!,
+          fit: BoxFit.cover,
+          height: 50,
+          width: 50,
         ),
-      );
+      )
+          : const CircleAvatar(
+        backgroundColor: Colors.grey,
+        child: Icon(Icons.person),
+      ),
+      title: Text(contact.fullName),
+      subtitle: Text(contact.phoneNumber),
+      onTap: () {
+        GoRouter.of(context).go('/contact_details/${contact.phoneNumber}');
+      },
+    ),
+  );
 
   void _deleteContact(BuildContext context, Contact contact) {
-    showDialog(
+    showCupertinoDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (context) => CupertinoAlertDialog(
         title: const Text('Delete Contact'),
         content: Text('Are you sure you want to delete ${contact.fullName}?'),
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () {
               contacts.remove(contact);
               Navigator.of(context).pop();
@@ -91,13 +91,15 @@ class PhoneBook extends StatelessWidget {
                 ),
               );
             },
+            isDestructiveAction: true,
             child: const Text('Delete'),
           ),
-          TextButton(
+          CupertinoDialogAction(
             onPressed: () {
               Navigator.of(context).pop();
               GoRouter.of(context).go('/contact_list');
             },
+            isDefaultAction: true,
             child: const Text('Cancel'),
           ),
         ],
